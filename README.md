@@ -1,18 +1,32 @@
-# Ramonzubiate Tap
+# Vyspec Homebrew Tap
 
-## How do I install these formulae?
+Install the Vyspec CLI on macOS:
 
-`brew install ramonzubiate/tap/<formula>`
+```bash
+brew install ramonzubiate/tap/vyspec
+vsy install-browser
+```
 
-Or `brew tap ramonzubiate/tap` and then `brew install <formula>`.
+Verify the installation:
 
-Or, in a `brew bundle` `Brewfile`:
+```bash
+vsy --version
+vsy doctor
+```
+
+Homebrew will update Vyspec with the rest of your installed formulae. To update it directly:
+
+```bash
+brew upgrade ramonzubiate/tap/vyspec
+```
+
+For a `Brewfile`:
 
 ```ruby
 tap "ramonzubiate/tap"
-brew "<formula>"
+brew "vyspec"
 ```
 
 ## Documentation
 
-`brew help`, `man brew` or check [Homebrew's documentation](https://docs.brew.sh).
+Visit [vyspec.com](https://vyspec.com) or run `vsy --help`.
