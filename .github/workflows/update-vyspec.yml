@@ -1,0 +1,83 @@
+name: Update Vyspec formula
+
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact PyPI version; leave blank to use the latest release
+        required: false
+        type: string
+
+concurrency:
+  group: update-vyspec-formula
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    name: Update, install, and verify
+    runs-on: macos-26
+    timeout-minutes: 30
+
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@df4b09108a1de9d6f995fe68f302b3f68bd6d2ef # 2026.07.20.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve and update the formula
+        id: update
+        env:
+          VYSPEC_VERSION: ${{ inputs.version }}
+        run: ruby scripts/update-vyspec-formula.rb
+
+      - name: Check formula style
+        if: steps.update.outputs.changed == 'true'
+        run: brew style ramonzubiate/tap/vyspec
+
+      - name: Audit the formula
+        if: steps.update.outputs.changed == 'true'
+        run: brew audit --new --formula ramonzubiate/tap/vyspec
+
+      - name: Install from source
+        if: steps.update.outputs.changed == 'true'
+        run: brew install --build-from-source ramonzubiate/tap/vyspec
+
+      - name: Run formula tests
+        if: steps.update.outputs.changed == 'true'
+        run: brew test ramonzubiate/tap/vyspec
+
+      - name: Install and launch Chromium
+        if: steps.update.outputs.changed == 'true'
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/vyspec-browsers
+        run: |
+          vsy install-browser
+          "$(brew --prefix vyspec)/libexec/bin/python" - <<'PY'
+          from playwright.sync_api import sync_playwright
+
+          with sync_playwright() as playwright:
+              browser = playwright.chromium.launch(headless=True)
+              page = browser.new_page()
+              page.set_content("<title>Vyspec release verification</title><h1>ready</h1>")
+              assert page.title() == "Vyspec release verification"
+              assert page.locator("h1").inner_text() == "ready"
+              browser.close()
+          PY
+
+      - name: Publish the verified formula update
+        if: steps.update.outputs.changed == 'true'
+        env:
+          VERSION: ${{ steps.update.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/vyspec.rb
+          git diff --cached --check
+          git commit -m "vyspec ${VERSION}"
+          git push origin HEAD:main

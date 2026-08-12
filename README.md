@@ -20,6 +20,8 @@ Homebrew will update Vyspec with the rest of your installed formulae. To update 
 brew upgrade ramonzubiate/tap/vyspec
 ```
 
+New PyPI releases are detected, rebuilt, and verified automatically before this tap is updated.
+
 For a `Brewfile`:
 
 ```ruby
