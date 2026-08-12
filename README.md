@@ -11,7 +11,7 @@ Verify the installation:
 
 ```bash
 vsy --version
-vsy doctor
+vsy --help
 ```
 
 Homebrew will update Vyspec with the rest of your installed formulae. To update it directly:
