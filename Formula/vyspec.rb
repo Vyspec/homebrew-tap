@@ -3,8 +3,8 @@ class Vyspec < Formula
 
   desc "Local AI browser QA runner and command-line interface"
   homepage "https://pypi.org/project/vyspec/"
-  url "https://files.pythonhosted.org/packages/fb/7e/8efb045b6e9c915cb74a1ab5f5a85e435c9ac1adbf13cbc1d4edfeee4b97/vyspec-0.1.2.tar.gz"
-  sha256 "7ebfced2ffdbb8c877101c9b245c04c8fdae01ee25f371b88b6f301cdf8339b4"
+  url "https://files.pythonhosted.org/packages/6b/0b/db7fe42f3356b66528082050dd4c34b2db84e536db5f955e1d7a8f71c7b2/vyspec-0.1.3.tar.gz"
+  sha256 "5c49de8ee126ec369e73ee29c3d331e2e35009194256da97702fbea48257f79e"
   license :cannot_represent
 
   depends_on "node"
@@ -18,11 +18,6 @@ class Vyspec < Formula
   resource "playwright" do
     url "https://github.com/microsoft/playwright-python/archive/refs/tags/v1.61.0.tar.gz"
     sha256 "ed26e5ef51c730b2bb8019042cb529f56dd459acd1a9bcbe3c0373ca598104ed"
-  end
-
-  resource "annotated-types" do
-    url "https://files.pythonhosted.org/packages/5f/56/a8120250d128bed162cd73c76d45f6ef9991f3e068f62a8ee060afa3104a/annotated_types-0.8.0.tar.gz"
-    sha256 "13b2beaad985e05e2d6407ee4c4f35590b11f8d693a258a561055cac8f64cab7"
   end
 
   resource "anyio" do
@@ -113,11 +108,6 @@ class Vyspec < Formula
   resource "typing-extensions" do
     url "https://files.pythonhosted.org/packages/f6/cc/6253133b5bb138fc3306cebfbda2c520f545d36b5be2c7255cc528bb45d6/typing_extensions-4.16.0.tar.gz"
     sha256 "dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"
-  end
-
-  resource "typing-inspection" do
-    url "https://files.pythonhosted.org/packages/6d/bc/4eae18cd40c65798a16267572ba346c11f599d44b01603dbd843342042bc/typing_inspection-0.4.3.tar.gz"
-    sha256 "c5f9ec1530b5c1e2c9bc34a84d9a3466ed1b2f3f2fa9f901368d9c5596210e4d"
   end
 
   resource "urllib3" do
