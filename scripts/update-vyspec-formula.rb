@@ -9,7 +9,7 @@ require "rubygems/version"
 require "uri"
 
 PACKAGE_NAME = "vyspec"
-FORMULA_REFERENCE = ENV.fetch("VYSPEC_FORMULA_REFERENCE", "ramonzubiate/tap/vyspec")
+FORMULA_REFERENCE = ENV.fetch("VYSPEC_FORMULA_REFERENCE", "vyspec/tap/vyspec")
 SEMANTIC_VERSION = /\A\d+\.\d+\.\d+\z/
 PYPI_HOST = "pypi.org"
 PYPI_FILES_HOST = "files.pythonhosted.org"

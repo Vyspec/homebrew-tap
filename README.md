@@ -3,7 +3,7 @@
 Install the Vyspec CLI on macOS:
 
 ```bash
-brew install ramonzubiate/tap/vyspec
+brew install vyspec/tap/vyspec
 vsy install-browser
 ```
 
@@ -17,7 +17,7 @@ vsy --help
 Homebrew will update Vyspec with the rest of your installed formulae. To update it directly:
 
 ```bash
-brew upgrade ramonzubiate/tap/vyspec
+brew upgrade vyspec/tap/vyspec
 ```
 
 New PyPI releases are detected, rebuilt, and verified automatically before this tap is updated.
@@ -25,7 +25,7 @@ New PyPI releases are detected, rebuilt, and verified automatically before this 
 For a `Brewfile`:
 
 ```ruby
-tap "ramonzubiate/tap"
+tap "vyspec/tap"
 brew "vyspec"
 ```
 

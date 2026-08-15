@@ -38,19 +38,19 @@ jobs:
 
       - name: Check formula style
         if: steps.update.outputs.changed == 'true'
-        run: brew style ramonzubiate/tap/vyspec
+        run: brew style vyspec/tap/vyspec
 
       - name: Audit the formula
         if: steps.update.outputs.changed == 'true'
-        run: brew audit --new --formula ramonzubiate/tap/vyspec
+        run: brew audit --new --formula vyspec/tap/vyspec
 
       - name: Install from source
         if: steps.update.outputs.changed == 'true'
-        run: brew install --build-from-source ramonzubiate/tap/vyspec
+        run: brew install --build-from-source vyspec/tap/vyspec
 
       - name: Run formula tests
         if: steps.update.outputs.changed == 'true'
-        run: brew test ramonzubiate/tap/vyspec
+        run: brew test vyspec/tap/vyspec
 
       - name: Install and launch Chromium
         if: steps.update.outputs.changed == 'true'
