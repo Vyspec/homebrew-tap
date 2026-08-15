@@ -4,12 +4,11 @@
 require "digest"
 require "json"
 require "net/http"
-require "pathname"
 require "rubygems/version"
 require "uri"
 
 PACKAGE_NAME = "vyspec"
-FORMULA_REFERENCE = ENV.fetch("VYSPEC_FORMULA_REFERENCE", "vyspec/tap/vyspec")
+FORMULA_REFERENCE = ENV.fetch("VYSPEC_FORMULA_REFERENCE", "vyspec/tap/vyspec").freeze
 SEMANTIC_VERSION = /\A\d+\.\d+\.\d+\z/
 PYPI_HOST = "pypi.org"
 PYPI_FILES_HOST = "files.pythonhosted.org"
@@ -25,7 +24,7 @@ def fetch(uri, redirects_remaining: 5)
   response = Net::HTTP.start(
     uri.hostname,
     uri.port,
-    use_ssl: uri.scheme == "https",
+    use_ssl:      uri.scheme == "https",
     open_timeout: 15,
     read_timeout: 60,
   ) { |http| http.request(request) }
@@ -43,22 +42,21 @@ end
 
 def replace_once!(contents, pattern, replacement, label)
   matches = contents.scan(pattern)
-  raise "Expected exactly one #{label}; found #{matches.length}" unless matches.length == 1
+  raise "Expected exactly one #{label}; found #{matches.length}" if matches.length != 1
 
   contents.sub!(pattern, replacement)
 end
 
 def write_output(name, value)
-  output_path = ENV["GITHUB_OUTPUT"]
-  return if output_path.nil? || output_path.empty?
+  output_path = ENV.fetch("GITHUB_OUTPUT", nil)
+  return if output_path.to_s.empty?
 
   File.open(output_path, "a") { |output| output.puts("#{name}=#{value}") }
 end
 
 requested_version = ENV.fetch("VYSPEC_VERSION", "").strip
-unless requested_version.empty? || SEMANTIC_VERSION.match?(requested_version)
-  raise "VYSPEC_VERSION must use MAJOR.MINOR.PATCH"
-end
+invalid_requested_version = !requested_version.empty? && !SEMANTIC_VERSION.match?(requested_version)
+raise "VYSPEC_VERSION must use MAJOR.MINOR.PATCH" if invalid_requested_version
 
 metadata_uri = if requested_version.empty?
   URI("https://#{PYPI_HOST}/pypi/#{PACKAGE_NAME}/json")
@@ -73,14 +71,15 @@ if !requested_version.empty? && requested_version != version
 end
 
 sdists = metadata.fetch("urls").select { |file| file.fetch("packagetype") == "sdist" }
-raise "Expected exactly one source distribution; found #{sdists.length}" unless sdists.length == 1
+raise "Expected exactly one source distribution; found #{sdists.length}" if sdists.length != 1
 
 sdist = sdists.fetch(0)
 sdist_uri = URI(sdist.fetch("url"))
-unless sdist_uri.scheme == "https" && sdist_uri.host == PYPI_FILES_HOST &&
-       sdist.fetch("filename") == "#{PACKAGE_NAME}-#{version}.tar.gz"
+if sdist_uri.scheme != "https" || sdist_uri.host != PYPI_FILES_HOST ||
+   sdist.fetch("filename") != "#{PACKAGE_NAME}-#{version}.tar.gz"
   raise "PyPI returned an unexpected source distribution URL"
 end
+
 sdist_sha256 = sdist.fetch("digests").fetch("sha256")
 raise "PyPI returned an invalid source distribution digest" unless /\A[0-9a-f]{64}\z/.match?(sdist_sha256)
 
@@ -89,9 +88,10 @@ playwright_requirements = requirements.each_with_object([]) do |requirement, ver
   match = requirement.match(/\Aplaywright==([0-9]+\.[0-9]+\.[0-9]+)(?:\s|;|\z)/)
   versions << match[1] unless match.nil?
 end
-unless playwright_requirements.length == 1
+if playwright_requirements.length != 1
   raise "Vyspec must declare exactly one exact Playwright version"
 end
+
 playwright_version = playwright_requirements.fetch(0)
 playwright_uri = URI(
   "https://#{PLAYWRIGHT_SOURCE_HOST}/microsoft/playwright-python/archive/refs/tags/" \
@@ -99,9 +99,9 @@ playwright_uri = URI(
 )
 playwright_sha256 = Digest::SHA256.hexdigest(fetch(playwright_uri))
 
-repository_root = Pathname(__dir__).parent
-formula_path = repository_root/"Formula/vyspec.rb"
-original_formula = formula_path.read
+repository_root = File.expand_path("..", __dir__)
+formula_path = File.join(repository_root, "Formula/vyspec.rb")
+original_formula = File.read(formula_path)
 current_version = original_formula[/vyspec-(\d+\.\d+\.\d+)\.tar\.gz/, 1]
 raise "Could not read the current Vyspec formula version" if current_version.nil?
 
@@ -116,23 +116,23 @@ if target == current && ENV["VYSPEC_FORCE_UPDATE"] != "1"
   exit 0
 end
 
-playwright_block_pattern = %r{\n  \# Playwright does not publish a source distribution to PyPI\.\n  resource "playwright" do\n    url "[^"]+"\n    sha256 "[0-9a-f]{64}"\n  end\n}
+playwright_block_pattern = /\n  \# Playwright does not publish a source distribution to PyPI\.\n  resource "playwright" do\n    url "[^"]+"\n    sha256 "[0-9a-f]{64}"\n  end\n/
 playwright_blocks = original_formula.scan(playwright_block_pattern)
-unless playwright_blocks.length == 1
+if playwright_blocks.length != 1
   raise "Expected exactly one managed Playwright resource; found #{playwright_blocks.length}"
 end
 
 updated_formula = original_formula.dup
 replace_once!(
   updated_formula,
-  /^  url "https:\/\/files\.pythonhosted\.org\/[^\n]+\/vyspec-\d+\.\d+\.\d+\.tar\.gz"$/,
-  %(  url "#{sdist_uri}"),
+  %r{^  url "https://files\.pythonhosted\.org/[^\n]+/vyspec-\d+\.\d+\.\d+\.tar\.gz"$},
+  %Q(  url "#{sdist_uri}"),
   "Vyspec source URL",
 )
 replace_once!(
   updated_formula,
-  /(^  url "https:\/\/files\.pythonhosted\.org\/[^\n]+\/vyspec-#{Regexp.escape(version)}\.tar\.gz"\n)  sha256 "[0-9a-f]{64}"$/,
-  %(\\1  sha256 "#{sdist_sha256}"),
+  %r{(^  url "https://files\.pythonhosted\.org/[^\n]+/vyspec-#{Regexp.escape(version)}\.tar\.gz"\n)  sha256 "[0-9a-f]{64}"$},
+  %Q(\\1  sha256 "#{sdist_sha256}"),
   "Vyspec source digest",
 )
 
@@ -146,7 +146,7 @@ RUBY
 playwright_block = playwright_block.lines.map { |line| "  #{line}" }.join
 
 updated_formula.sub!(playwright_block_pattern, "\n")
-formula_path.write(updated_formula)
+File.write(formula_path, updated_formula)
 
 begin
   command = [
@@ -157,7 +157,7 @@ begin
   ]
   raise "Homebrew could not update Python resources" unless system(*command)
 
-  generated_formula = formula_path.read
+  generated_formula = File.read(formula_path)
   resource_anchor = /(^  pypi_packages [^\n]+\n                extra_packages: [^\n]+\n)/
   replace_once!(
     generated_formula,
@@ -165,9 +165,9 @@ begin
     "\\1\n#{playwright_block}",
     "Python package declaration",
   )
-  formula_path.write(generated_formula)
-rescue StandardError
-  formula_path.write(original_formula)
+  File.write(formula_path, generated_formula)
+rescue
+  File.write(formula_path, original_formula)
   raise
 end
 
