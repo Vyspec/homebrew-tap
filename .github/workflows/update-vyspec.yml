@@ -1,5 +1,7 @@
 name: Update Vyspec formula
 
+run-name: ${{ inputs.version && format('Promote Vyspec CLI {0}', inputs.version) || 'Check for a new Vyspec CLI release' }}
+
 on:
   schedule:
     - cron: "17,47 * * * *"
