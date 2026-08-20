@@ -3,8 +3,8 @@ class Vyspec < Formula
 
   desc "Local AI browser QA runner and command-line interface"
   homepage "https://pypi.org/project/vyspec/"
-  url "https://files.pythonhosted.org/packages/6b/0b/db7fe42f3356b66528082050dd4c34b2db84e536db5f955e1d7a8f71c7b2/vyspec-0.1.3.tar.gz"
-  sha256 "5c49de8ee126ec369e73ee29c3d331e2e35009194256da97702fbea48257f79e"
+  url "https://files.pythonhosted.org/packages/75/f7/e06418ef4d342a6781c3467570fa0eb6594d6e24160d7cb26a8acda9005d/vyspec-0.1.5.tar.gz"
+  sha256 "87c20bbb4f6b27d063534f22c0496345cdc16bcd8d8e9086a0d9e3844bc0c6f4"
   license :cannot_represent
 
   depends_on "node"
@@ -51,8 +51,8 @@ class Vyspec < Formula
   end
 
   resource "idna" do
-    url "https://files.pythonhosted.org/packages/cd/63/9496c57188a2ee585e0f1db071d75089a11e98aa86eb99d9d7618fc1edce/idna-3.18.tar.gz"
-    sha256 "ffb385a7e039654cef1ab9ef32c6fafe283c0c0467bba1d9029738ce4a14a848"
+    url "https://files.pythonhosted.org/packages/5f/f7/abb373e5757eaec4b922b92f97ec8d6d7e057cf06778247604fbc4e7c3f3/idna-3.19.tar.gz"
+    sha256 "5e0811a4383b21dc5838069f801c4fb62113b7447663d2530d2bd6e77b49bf15"
   end
 
   resource "markdown-it-py" do
@@ -81,13 +81,13 @@ class Vyspec < Formula
   end
 
   resource "pygments" do
-    url "https://files.pythonhosted.org/packages/c3/b2/bc9c9196916376152d655522fdcebac55e66de6603a76a02bca1b6414f6c/pygments-2.20.0.tar.gz"
-    sha256 "6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f"
+    url "https://files.pythonhosted.org/packages/49/2e/ced460408999b33da6b31b0021b0f37d329e202d4169aeb164493778f25b/pygments-2.21.0.tar.gz"
+    sha256 "610ca751c9bc2492b38eb9a38a7fbc93edbbb2d7182edaf34e66ae493dee5c8c"
   end
 
   resource "python-dotenv" do
-    url "https://files.pythonhosted.org/packages/82/ed/0301aeeac3e5353ef3d94b6ec08bbcabd04a72018415dcb29e588514bba8/python_dotenv-1.2.2.tar.gz"
-    sha256 "2c371a91fbd7ba082c2c1dc1f8bf89ca22564a087c2c287cd9b662adde799cf3"
+    url "https://files.pythonhosted.org/packages/6a/53/ed9d74092561d4b01a2ef1349d52cdbc135e526c245f366b089cfca6de49/python_dotenv-1.2.3.tar.gz"
+    sha256 "a20a594dabeaa385725aa239d5244871c143ecb356add8a20fcf23773a6c3a35"
   end
 
   resource "rich" do
@@ -96,8 +96,8 @@ class Vyspec < Formula
   end
 
   resource "sentry-sdk" do
-    url "https://files.pythonhosted.org/packages/ad/8a/b2eec40df8a67bf073e244d29001d04ee365d163bc4f15efdfce35f53090/sentry_sdk-2.67.1.tar.gz"
-    sha256 "f263d8c9aa4137750640de8fb0ed5404df6bb564e20e4b59cb16a6eeba18d4ed"
+    url "https://files.pythonhosted.org/packages/5b/94/23b7dd072acb9628907bd3f4fbf61794a7b12a9db8f33c1276f70ae5ac92/sentry_sdk-2.68.0.tar.gz"
+    sha256 "648c58e9887311a03470a41539e24bdbbf64a30ca4f5336f7e3dcc87276400b3"
   end
 
   resource "structlog" do
