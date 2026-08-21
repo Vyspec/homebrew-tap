@@ -3,8 +3,8 @@ class Vyspec < Formula
 
   desc "Local AI browser QA runner and command-line interface"
   homepage "https://pypi.org/project/vyspec/"
-  url "https://files.pythonhosted.org/packages/a9/c6/a189cca94a7fa00ceaa7abc2770cfe9d8966675292108ab0081734b89d06/vyspec-0.1.7.tar.gz"
-  sha256 "a7e70411b412925db975db1ddc19556e57bc33e8143ccd04c1cfebb217cbb4f1"
+  url "https://files.pythonhosted.org/packages/b7/a5/e1bc3af1c2c4d220c6856c521345396a25bf7a57d6fb904157c249d4bdba/vyspec-0.1.8.tar.gz"
+  sha256 "9b2428bdeff67c16bd56501d3100f9adb558fe8e35ee64b39316d10107ce7eff"
   license :cannot_represent
 
   depends_on "node"
